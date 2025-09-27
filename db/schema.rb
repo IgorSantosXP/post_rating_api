@@ -10,17 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_27_182637) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_27_185723) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "posts", force: :cascade do |t|
     t.string "title", null: false
     t.text "body", null: false
-    t.string "ip", null: false
+    t.inet "ip", null: false
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["ip"], name: "index_posts_on_ip"
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
@@ -31,6 +32,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_27_182637) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["post_id"], name: "index_ratings_on_post_id"
+    t.index ["user_id", "post_id"], name: "index_ratings_on_user_id_and_post_id", unique: true
     t.index ["user_id"], name: "index_ratings_on_user_id"
   end
 
