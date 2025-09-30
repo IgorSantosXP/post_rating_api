@@ -8,7 +8,7 @@ RSpec.describe 'Ratings API', type: :request do
     let(:post_record) { user.posts.create!(title: 'A post', body: 'Some content', ip: '127.0.0.1') }
 
     context 'with valid parameters' do
-      let(:valid_params) { { user_id: user.id, value: 4 } }
+      let(:valid_params) { { rating: { user_id: user.id, value: 4 } } }
 
       it 'create a new assessment' do
         expect { post "/posts/#{post_record.id}/ratings", params: valid_params }.to change(Rating, :count).by(1)
@@ -25,10 +25,10 @@ RSpec.describe 'Ratings API', type: :request do
 
     context 'when the user tries to rate the same post twice' do
       it 'returns an error on the second attempt' do
-        post "/posts/#{post_record.id}/ratings", params: { user_id: user.id, value: 5 }
+        post "/posts/#{post_record.id}/ratings", params: { rating: { user_id: user.id, value: 5 } }
         expect(response).to have_http_status(:created)
 
-        post "/posts/#{post_record.id}/ratings", params: { user_id: user.id, value: 1 }
+        post "/posts/#{post_record.id}/ratings", params: { rating: { user_id: user.id, value: 1 } }
         expect(response).to have_http_status(422)
 
         json_response = response.parsed_body
@@ -38,7 +38,7 @@ RSpec.describe 'Ratings API', type: :request do
 
     context 'with an invalid evaluation value' do
       it 'returns a validation error' do
-        invalid_params = { user_id: user.id, value: 6 }
+        invalid_params = { rating: { user_id: user.id, value: 6 } }
         post "/posts/#{post_record.id}/ratings", params: invalid_params
 
         expect(response).to have_http_status(422)

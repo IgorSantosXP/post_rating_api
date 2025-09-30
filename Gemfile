@@ -38,6 +38,9 @@ gem 'thruster', require: false
 # gem "rack-cors"
 
 group :development, :test do
+  gem 'faker'
+  gem 'typhoeus'
+
   gem 'rspec-rails'
   gem 'rubocop', '~> 1.81', require: false
   gem 'rubocop-rspec', require: false
