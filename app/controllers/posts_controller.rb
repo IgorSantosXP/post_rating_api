@@ -6,15 +6,15 @@ class PostsController < ApplicationController
     post = user.posts.new(post_params)
 
     if post.save
-      render json: post, status: :created
+      render json: post, include: :user, status: :created
     else
-      render json: { errors: post.errors }, status: :unprocessable_entity
+      render json: { errors: post.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
   private
 
   def post_params
-    params.expect(post: %i[title body ip])
+    params.require(:post).permit(:title, :body, :ip)
   end
 end
