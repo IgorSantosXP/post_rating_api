@@ -12,6 +12,18 @@ class PostsController < ApplicationController
     end
   end
 
+  def top
+    count = params[:count].to_i
+    top_posts = Post
+                .select(:id, :title, :body)
+                .joins(:ratings)
+                .group('posts.id')
+                .order('AVG(ratings.value) DESC')
+                .limit(count)
+
+    render json: top_posts, status: :ok
+  end
+
   private
 
   def post_params

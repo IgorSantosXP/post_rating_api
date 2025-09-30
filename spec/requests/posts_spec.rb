@@ -79,4 +79,49 @@ RSpec.describe 'Posts API', type: :request do
       end
     end
   end
+
+  describe 'GET /posts/top' do
+    let!(:user) { User.create(login: 'test_user') }
+    let!(:another_user) { User.create(login: 'another_user') }
+
+    before do
+      bad_post = user.posts.create!(title: 'Bad Post', body: '...', ip: '1.1.1.1')
+      excellent_post = user.posts.create!(title: 'Excellent Post', body: '...', ip: '2.2.2.2')
+      average_post = user.posts.create!(title: 'Average Post', body: '...', ip: '3.3.3.3')
+      user.posts.create!(title: 'Unrated post', body: '...', ip: '4.4.4.4')
+
+      bad_post.ratings.create!(user: user, value: 1)
+      excellent_post.ratings.create!(user: user, value: 5)
+      average_post.ratings.create!(user: user, value: 2)
+      average_post.ratings.create!(user: another_user, value: 4)
+    end
+
+    context 'when requesting top N posts' do
+      let(:count) { 2 }
+
+      it 'returns the posts with the highest average rating in descending order' do
+        get "/posts/top?count=#{count}"
+
+        expect(response).to have_http_status(:ok)
+        json_response = response.parsed_body
+
+        expect(json_response.size).to eq(count)
+        expect(json_response[0]['title']).to eq('Excellent Post')
+        expect(json_response[1]['title']).to eq('Average Post')
+        expect(json_response[0].keys).to contain_exactly('id', 'title', 'body')
+      end
+    end
+
+    context 'when there are unrated posts' do
+      let(:count) { 10 }
+
+      it 'does not include posts that have no ratings' do
+        get "/posts/top?count=#{count}"
+        json_response = response.parsed_body
+
+        expect(json_response.pluck('title')).not_to include('Unrated post')
+        expect(json_response.size).to eq(3)
+      end
+    end
+  end
 end

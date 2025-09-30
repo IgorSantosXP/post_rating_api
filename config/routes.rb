@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
   resources :posts, only: [:create] do
+    get :top, on: :collection
+
     resources :ratings, only: [:create]
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
