@@ -69,7 +69,7 @@ RSpec.describe 'Posts API', type: :request do
 
       it 'returns unprocessable_entity status' do
         post '/posts', params: invalid_params
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(422)
       end
 
       it 'returns validation error message' do
