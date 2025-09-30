@@ -31,7 +31,7 @@ class PostsController < ApplicationController
                       .group('posts.ip')
                       .having('COUNT(DISTINCT users.id) > 1')
 
-    render json: shared_ips_data, status: :ok
+    render json: shared_ips_data.as_json(except: :id), status: :ok
   end
 
   private
