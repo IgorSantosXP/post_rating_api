@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   resources :posts, only: [:create] do
     get :top, on: :collection
+    get :shared_ips, on: :collection
 
     resources :ratings, only: [:create]
   end

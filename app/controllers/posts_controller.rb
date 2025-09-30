@@ -24,6 +24,16 @@ class PostsController < ApplicationController
     render json: top_posts, status: :ok
   end
 
+  def shared_ips
+    shared_ips_data = Post
+                      .select('posts.ip, ARRAY_AGG(DISTINCT users.login) as logins')
+                      .joins(:user)
+                      .group('posts.ip')
+                      .having('COUNT(DISTINCT users.id) > 1')
+
+    render json: shared_ips_data, status: :ok
+  end
+
   private
 
   def post_params

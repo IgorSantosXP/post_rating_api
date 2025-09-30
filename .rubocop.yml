@@ -10,7 +10,7 @@ AllCops:
     - 'db/queue_schema.rb'
     - 'bin/*'
     - 'config/routes.rb'
-    - 'vendor/'
+    - 'vendor/bundle/**/*'
 
 Rails/StrongParametersExpect:
   Enabled: false
